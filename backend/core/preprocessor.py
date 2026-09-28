@@ -36,12 +36,20 @@ class TextPreprocessor:
 
     # High-confidence heuristic rules for immediate blocking / escalation
     REGEX_RULES = [
+        # English Rules
         (re.compile(r"ignore\s+(all\s+)?(previous|prior|above)\s+(instructions|prompts|rules)", re.IGNORECASE), "RULE_IGNORE_INSTRUCTIONS"),
         (re.compile(r"\bDAN\b|\bDo\s+Anything\s+Now\b", re.IGNORECASE), "RULE_DAN_JAILEBREAK"),
         (re.compile(r"developer\s+mode", re.IGNORECASE), "RULE_DEV_MODE"),
         (re.compile(r"system\s+prompt\s+override", re.IGNORECASE), "RULE_PROMPT_OVERRIDE"),
         (re.compile(r"(reveal|print|output|show)\s+.*(api_key|jwt_secret|password|credentials)", re.IGNORECASE), "RULE_EXFILTRATION_INTENT"),
         (re.compile(r"\]\]\]\s*end\s+of\s+text", re.IGNORECASE), "RULE_DELIMITER_BREAKOUT"),
+
+        # Korean Rules (한글 공격 패치)
+        (re.compile(r"(이전|이전의)\s*(모든)?\s*(지시|지침|명령|프롬프트)(를|을)?\s*(무시|잊어|취소)", re.IGNORECASE), "RULE_KR_IGNORE_INSTRUCTIONS"),
+        (re.compile(r"(무시하고|무시해|잊어버리고)\s*.*(답변|응답|행동)", re.IGNORECASE), "RULE_KR_IGNORE_AND_RESPOND"),
+        (re.compile(r"(개발자\s*모드|자유\s*모드|탈옥\s*모드)", re.IGNORECASE), "RULE_KR_DEV_MODE"),
+        (re.compile(r"(시스템\s*프롬프트|최상위\s*지침|설정값|시스템\s*명령어)(를|을)?\s*(출력|보여|탈취|유출|인쇄|프린트)", re.IGNORECASE), "RULE_KR_PROMPT_OVERRIDE"),
+        (re.compile(r"(API\s*키|비밀키|패스워드|비밀번호|인증키)(를|을)?\s*(유출|출력|보여|알려)", re.IGNORECASE), "RULE_KR_EXFILTRATION"),
     ]
 
     def __init__(self):
