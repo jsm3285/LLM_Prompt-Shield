@@ -44,12 +44,12 @@ class TextPreprocessor:
         (re.compile(r"(reveal|print|output|show)\s+.*(api_key|jwt_secret|password|credentials)", re.IGNORECASE), "RULE_EXFILTRATION_INTENT"),
         (re.compile(r"\]\]\]\s*end\s+of\s+text", re.IGNORECASE), "RULE_DELIMITER_BREAKOUT"),
 
-        # Korean Rules (한글 공격 패치)
-        (re.compile(r"(이전|이전의)\s*(모든)?\s*(지시|지침|명령|프롬프트)(를|을)?\s*(무시|잊어|취소)", re.IGNORECASE), "RULE_KR_IGNORE_INSTRUCTIONS"),
-        (re.compile(r"(무시하고|무시해|잊어버리고)\s*.*(답변|응답|행동)", re.IGNORECASE), "RULE_KR_IGNORE_AND_RESPOND"),
-        (re.compile(r"(개발자\s*모드|자유\s*모드|탈옥\s*모드)", re.IGNORECASE), "RULE_KR_DEV_MODE"),
-        (re.compile(r"(시스템\s*프롬프트|최상위\s*지침|설정값|시스템\s*명령어)(를|을)?\s*(출력|보여|탈취|유출|인쇄|프린트)", re.IGNORECASE), "RULE_KR_PROMPT_OVERRIDE"),
-        (re.compile(r"(API\s*키|비밀키|패스워드|비밀번호|인증키)(를|을)?\s*(유출|출력|보여|알려)", re.IGNORECASE), "RULE_KR_EXFILTRATION"),
+        # Comprehensive Korean Attack Rules (한글 공격 패치)
+        (re.compile(r"(이전|이전의|모든)\s*.*(지시|지침|명령|프롬프트).*(무시|잊어|취소|해방)", re.IGNORECASE | re.DOTALL), "RULE_KR_IGNORE_INSTRUCTIONS"),
+        (re.compile(r"(무시하고|무시해|잊어버리고)\s*.*(답변|응답|행동)", re.IGNORECASE | re.DOTALL), "RULE_KR_IGNORE_AND_RESPOND"),
+        (re.compile(r"(개발자\s*모드|자유\s*모드|탈옥\s*모드|제약\s*없이)", re.IGNORECASE), "RULE_KR_DEV_MODE"),
+        (re.compile(r"(시스템\s*프롬프트|최상위\s*지침|설정\s*내용|시스템\s*명령어).*(출력|보여|유출|인쇄|프린트|재정의)", re.IGNORECASE | re.DOTALL), "RULE_KR_PROMPT_OVERRIDE"),
+        (re.compile(r"(OPENAI_API_KEY|API\s*키|비밀키|비밀번호|자격\s*증명|환경\s*변수).*(유출|출력|보여|알려|복사)", re.IGNORECASE | re.DOTALL), "RULE_KR_EXFILTRATION"),
     ]
 
     def __init__(self):
