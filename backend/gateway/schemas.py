@@ -63,11 +63,17 @@ class AuditLogItem(BaseModel):
     timestamp: str
     client_ip: str
     prompt_snippet: str
+    full_prompt: Optional[str] = ""
+    normalized_prompt: Optional[str] = ""
     is_blocked: bool
-    threat_category: Optional[str]
+    threat_category: Optional[str] = None
     confidence_score: float
+    matched_pattern: Optional[str] = None
+    target_model: str = "llama3.2:1B Instruct"
+    detected_rules: List[str] = []
     latency_ms: float
     action: str  # PASSED | BLOCKED
+
 
 
 class MetricsResponse(BaseModel):

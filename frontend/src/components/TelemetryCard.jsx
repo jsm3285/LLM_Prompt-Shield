@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function TelemetryCard({ metrics }) {
+export default function TelemetryCard({ metrics, engineInfo }) {
   const breakdown = metrics?.threat_category_breakdown || {};
   const totalBlocked = metrics?.blocked_requests || 1;
 
@@ -14,7 +14,7 @@ export default function TelemetryCard({ metrics }) {
     <div className="card-panel">
       <div className="panel-title">
         <span>📊 위협 유형별 실시간 측정</span>
-        <span className="badge-tag">FastAPI + React</span>
+        <span className="badge-tag">PID-1 코어 엔진</span>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -50,15 +50,15 @@ export default function TelemetryCard({ metrics }) {
       </div>
 
       <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-glass)', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--accent-cyan)' }}>🧩 시스템 아키텍처:</div>
+        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--accent-cyan)' }}>🧩 활성 보안 엔진 아키텍처 (WBS 3.1.5 & 3.2.1):</div>
         <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-          • <strong>FastAPI 프록시 백엔드:</strong> 인라인 프록시 파이프라인 (<code>backend/gateway/routes.py</code>)
+          • <strong>임베딩 엔진:</strong> {engineInfo?.embedding_extractor || 'Lightweight Hash Projection (384-dim)'}
         </div>
         <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-          • <strong>AI 벡터 저장소:</strong> 25ms 미만 인메모리 코사인 검색 (<code>backend/engine/</code>)
+          • <strong>벡터 DB 백엔드:</strong> {engineInfo?.vector_store?.backend || 'In-Memory Cosine Similarity'}
         </div>
         <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-          • <strong>React SPA 프론트엔드:</strong> Vite 관제 UI (<code>frontend/src/</code>)
+          • <strong>인라인 프록시 게이트웨이:</strong> FastAPI (OpenAI 호환 <code>/v1/chat/completions</code>)
         </div>
       </div>
     </div>

@@ -42,12 +42,16 @@ async def add_security_headers(request: Request, call_next):
 # Include Gateway & Telemetry API Router
 app.include_router(api_router)
 
-# Resolve frontend dist assets directory
+# Resolve frontend dist & dashboard directories
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 frontend_dist = os.path.join(root_dir, "frontend", "dist")
+dashboard_dir = os.path.join(root_dir, "dashboard")
 
 if os.path.exists(os.path.join(frontend_dist, "assets")):
     app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="react_assets")
+
+if os.path.exists(dashboard_dir):
+    app.mount("/dashboard/static", StaticFiles(directory=dashboard_dir), name="dashboard_static")
 
 
 @app.get("/")
@@ -58,6 +62,16 @@ async def serve_dashboard():
     if os.path.exists(index_file):
         return FileResponse(index_file, media_type="text/html")
     return {"message": "Prompt Shield API Gateway Running. React Frontend available after npm run build inside frontend/"}
+
+
+@app.get("/vanilla")
+async def serve_vanilla_dashboard():
+    """Serves the standalone Vanilla JS dashboard."""
+    index_file = os.path.join(dashboard_dir, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file, media_type="text/html")
+    return {"message": "Prompt Shield Vanilla Dashboard not found."}
+
 
 
 if __name__ == "__main__":

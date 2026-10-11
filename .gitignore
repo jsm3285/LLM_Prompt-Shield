@@ -16,3 +16,8 @@ frontend/dist/
 # Environment & Secrets
 .env
 *.local
+
+# Reports & WBS Documents (Excluded from GitHub)
+*.xlsx
+*보고서*.txt
+*수정사항*.txt

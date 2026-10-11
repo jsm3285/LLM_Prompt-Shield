@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
-import MetricsGrid from './components/MetricsGrid';
-import Playground from './components/Playground';
-import TelemetryCard from './components/TelemetryCard';
-import AuditLogTable from './components/AuditLogTable';
-import Chatbot from './components/Chatbot';
+import LlmTestPage from './pages/LlmTestPage';
+import DashboardPage from './pages/DashboardPage';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('chatbot'); // 'chatbot' | 'dashboard'
+  const [activeTab, setActiveTab] = useState('llm'); // 'llm' | 'dashboard'
   const [metrics, setMetrics] = useState(null);
   const [logs, setLogs] = useState([]);
+  const [engineInfo, setEngineInfo] = useState(null);
 
   const fetchMetrics = async () => {
     try {
@@ -35,14 +33,28 @@ export default function App() {
     }
   };
 
+  const fetchEngineInfo = async () => {
+    try {
+      const resp = await fetch('/api/v1/shield/info');
+      if (resp.ok) {
+        const data = await resp.json();
+        setEngineInfo(data.engine);
+      }
+    } catch (err) {
+      console.warn('Engine info fetch error:', err);
+    }
+  };
+
   const handleRefresh = () => {
     fetchMetrics();
     fetchLogs();
+    fetchEngineInfo();
   };
 
   useEffect(() => {
     fetchMetrics();
     fetchLogs();
+    fetchEngineInfo();
 
     const interval = setInterval(() => {
       fetchMetrics();
@@ -54,44 +66,21 @@ export default function App() {
 
   return (
     <div>
-      <Header />
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
       <main className="main-container">
-
-        {/* Tab Navigation */}
-        <div style={{ display: 'flex', gap: '0.8rem', marginBottom: '1.2rem' }}>
-          <button
-            className={`btn ${activeTab === 'chatbot' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setActiveTab('chatbot')}
-            style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-          >
-            💬 실시간 AI 챗봇 모드
-          </button>
-          <button
-            className={`btn ${activeTab === 'dashboard' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setActiveTab('dashboard')}
-            style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-          >
-            📊 관제 대시보드 & 보안 플레이그라운드
-          </button>
-        </div>
-
-        <MetricsGrid metrics={metrics} />
-
-        {activeTab === 'chatbot' ? (
-          <section style={{ marginTop: '1rem' }}>
-            <Chatbot />
-          </section>
+        {activeTab === 'llm' ? (
+          <LlmTestPage />
         ) : (
-          <section className="grid-two-col">
-            <Playground onInspectComplete={handleRefresh} />
-            <TelemetryCard metrics={metrics} />
-          </section>
+          <DashboardPage
+            metrics={metrics}
+            logs={logs}
+            engineInfo={engineInfo}
+            onRefresh={handleRefresh}
+          />
         )}
-
-        <div style={{ marginTop: '1.5rem' }}>
-          <AuditLogTable logs={logs} onRefresh={handleRefresh} />
-        </div>
       </main>
     </div>
   );
 }
+
+

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  prompt-shield:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: prompt-shield:latest
+    container_name: prompt_shield_gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=false
+      - DEFAULT_MODEL=llama3.2:1b
+      - OPENAI_BASE_URL=http://host.docker.internal:11434/v1
+      - SIMILARITY_THRESHOLD=0.70
+      - MAX_LATENCY_BUDGET_MS=25.0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./backend/data:/app/backend/data

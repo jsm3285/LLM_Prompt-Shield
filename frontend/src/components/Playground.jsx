@@ -30,6 +30,7 @@ export default function Playground({ onInspectComplete }) {
 
       const data = await resp.json();
       setResult(data);
+
       if (onInspectComplete) onInspectComplete();
     } catch (err) {
       console.error('Inspection failed:', err);
@@ -37,6 +38,8 @@ export default function Playground({ onInspectComplete }) {
       setLoading(false);
     }
   };
+
+
 
   const handleClear = () => {
     setPrompt('');
@@ -160,3 +163,4 @@ export default function Playground({ onInspectComplete }) {
     </div>
   );
 }
+

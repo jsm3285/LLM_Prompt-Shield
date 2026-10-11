@@ -13,14 +13,16 @@ class Settings:
         self.HOST: str = os.getenv("HOST", "127.0.0.1")
         self.DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
         
-        # Upstream OpenAI Configuration
+        # Upstream LLM Configuration (박화랑 취약 LLM 환경: llama3.2:1B Instruct)
         self.OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "sk-demo-mock-key")
-        self.OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-        self.DEFAULT_MODEL: str = os.getenv("DEFAULT_MODEL", "gpt-4o-mini")
+        self.OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "http://localhost:11434/v1")  # Ollama / vLLM / OpenAI
+        self.DEFAULT_MODEL: str = os.getenv("DEFAULT_MODEL", "llama3.2:1b")
+        self.TARGET_LLM_NAME: str = os.getenv("TARGET_LLM_NAME", "llama3.2:1B Instruct (PyTorch 2.2.0+cu121)")
         
         # Guard Engine Parameters
         self.SIMILARITY_THRESHOLD: float = float(os.getenv("SIMILARITY_THRESHOLD", "0.72"))
         self.MAX_LATENCY_BUDGET_MS: float = float(os.getenv("MAX_LATENCY_BUDGET_MS", "25.0"))
+
         
         # Resolve dataset path dynamically
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

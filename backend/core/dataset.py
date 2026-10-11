@@ -20,10 +20,21 @@ class AttackVector(BaseModel):
 class AttackVectorDataset:
     """Manages loading, filtering, and dynamic updating of attack vector datasets."""
 
-    def __init__(self, file_path: str = "data/attack_vectors.json"):
-        self.file_path = file_path
+    def __init__(self, file_path: Optional[str] = None):
+        if not file_path:
+            # Default to backend/data/attack_vectors.json relative to core/
+            default_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "attack_vectors.json")
+            self.file_path = default_path if os.path.exists(default_path) else "data/attack_vectors.json"
+        else:
+            if not os.path.exists(file_path):
+                alt_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "attack_vectors.json")
+                if os.path.exists(alt_path):
+                    file_path = alt_path
+            self.file_path = file_path
+
         self.vectors: List[AttackVector] = []
         self.load_dataset()
+
 
     def load_dataset(self) -> List[AttackVector]:
         """Loads attack vectors from JSON file."""
